@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "Homer Simpson",
+    "age": 38,
+    "active": true
+  },
+  {
+    "id": 3,
+    "name": "Bart Simpson",
+    "age": 10,
+    "active": true
+  },
+  {
+    "id": 2,
+    "name": "Marge Simpson",
+    "age": 38,
+    "active": true
+  },
+  {
+    "id": 4,
+    "name": "Lisa Simpson",
+    "age": 8,
+    "active": true
+  }
+]

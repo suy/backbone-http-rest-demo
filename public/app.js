@@ -21,6 +21,11 @@ var Model = Backbone.Model.extend({
     active: false,
   },
 
+  sync: function() {
+    console.debug('SYNC', arguments);
+    return Backbone.sync.apply(this, arguments);
+  },
+
   urlRoot: function() {
     var url = $('input#backend-url').val();
     return url.length !== 0? url: '/user';
@@ -33,30 +38,45 @@ var view = new View({ model: model });
 view.render();
 
 $('button').on('click', function(e) {
+  var options = {
+    emulateHTTP: $('input.emulate-http:checked').length === 1,
+    emulateJSON: $('input.emulate-json:checked').length === 1,
+    patch:       $('input.use-http-patch:checked').length === 1,
+  };
+
   var $button = $(e.target);
 
+  // CREATE
   if ($button.hasClass('btn-primary')) {
     if (model.isNew()) {
-      model.save();
+      model.save({}, options);
     } else {
       alert('The model is not new, you can only UPDATE it.');
     }
   }
 
+  // READ
   if ($button.hasClass('btn-success')) {
-    model.fetch();
+    model.fetch(options);
   }
 
+  // UPDATE
   if ($button.hasClass('btn-warning')) {
     if (model.isNew()) {
       alert('The model is new, you can only CREATE it.');
     } else {
-      var patch = $('input[type=checkbox].use-patch:checked').length === 1;
-      model.save({patch: patch});
+      model.save({}, options);
     }
   }
 
+  // DELETE
   if ($button.hasClass('btn-danger')) {
-    model.destroy();
+    model.destroy(options);
   }
 });
+
+
+model.on('all', function() {
+  console.debug('EVENT', arguments);
+});
+

@@ -1,7 +1,12 @@
 #!/usr/bin/env ruby
 
 require 'sinatra'
+require 'sinatra/cross_origin'
 require 'json'
+
+configure do
+  enable :cross_origin
+end
 
 helpers do
   def model_file()

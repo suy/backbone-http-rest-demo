@@ -1,3 +1,8 @@
+_.templateSettings = {
+  interpolate: /\{\{(.+?)\}\}/g,
+  escape: /\{\{\{(.+?)\}\}\}/g
+};
+
 var View = Backbone.View.extend({
   el: 'div.model-view',
   className: 'col-sm-offset-4 col-sm-4',
@@ -5,12 +10,13 @@ var View = Backbone.View.extend({
   template: _.template($('#ModelViewTemplate').html()),
 
   render: function() {
-    this.$el.html(this.template(this.model.attributes));
+    this.$el.html(this.template(_.defaults(this.model.attributes, {id: ''})));
     return this;
   },
 
   initialize: function(options) {
     this.model = options.model;
+    this.listenTo(model, 'sync', this.render);
   },
 
   syncModelAttributes: function(event) {

@@ -12,13 +12,23 @@ var View = Backbone.View.extend({
   initialize: function(options) {
     this.model = options.model;
   },
+
+  syncModelAttributes: function(event) {
+      model.set(event.target.name, event.target.value);
+  },
+
+  events: {
+      'change input': 'syncModelAttributes',
+      'keyup input': 'syncModelAttributes',
+  },
+
 });
 
 var Model = Backbone.Model.extend({
   defaults: {
     name: '',
     age: 0,
-    active: false,
+    enabled: false,
   },
 
   sync: function() {

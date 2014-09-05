@@ -64,11 +64,7 @@ $('button').on('click', function(e) {
 
   // CREATE
   if ($button.hasClass('btn-primary')) {
-    if (model.isNew()) {
-      model.save({}, options);
-    } else {
-      alert('The model is not new, you can only UPDATE it.');
-    }
+    model.save({}, options);
   }
 
   // READ
@@ -78,11 +74,7 @@ $('button').on('click', function(e) {
 
   // UPDATE
   if ($button.hasClass('btn-warning')) {
-    if (model.isNew()) {
-      alert('The model is new, you can only CREATE it.');
-    } else {
-      model.save({}, options);
-    }
+    model.save({}, options);
   }
 
   // DELETE

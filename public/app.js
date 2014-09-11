@@ -10,7 +10,7 @@ var View = Backbone.View.extend({
   template: _.template($('#ModelViewTemplate').html()),
 
   render: function() {
-    this.$el.html(this.template(_.defaults(this.model.attributes, {id: ''})));
+    this.$el.html(this.template(_.defaults({}, this.model.attributes, {id: ''})));
     return this;
   },
 
@@ -20,7 +20,26 @@ var View = Backbone.View.extend({
   },
 
   syncModelAttributes: function(event) {
-      model.set(event.target.name, event.target.value);
+    switch (event.target.name) {
+    case 'name':
+    case 'age':
+      var value = event.target.value;
+      if (event.target.name === 'age') { value = parseInt(value); }
+      model.set(event.target.name, value);
+      break;
+
+    case 'id':
+      if (event.target.value === '') {
+        // TODO: Mmm, unsure how to actually unset the ID. Probably Backbone is
+        // not even designed for it.
+        // delete model.id;
+        // delete model.attributes[model.idAttribute];
+        model.set(model.idAttribute, null);
+      } else {
+        model.set(model.idAttribute, parseInt(event.target.value) || null);
+      }
+      break;
+    }
   },
 
   events: {
@@ -64,17 +83,29 @@ $('button').on('click', function(e) {
 
   // CREATE
   if ($button.hasClass('btn-primary')) {
-    model.save({}, options);
+    if (model.isNew()) {
+      model.save({}, options);
+    } else {
+      alert('Can not CREATE a model with an ID. Clear it, or use UPDATE.');
+    }
   }
 
   // READ
   if ($button.hasClass('btn-success')) {
-    model.fetch(options);
+    if (model.isNew()) {
+      alert('Without ID, only a collection could be read. Set it to read that model.');
+    } else {
+      model.fetch(options);
+    }
   }
 
   // UPDATE
   if ($button.hasClass('btn-warning')) {
-    model.save({}, options);
+    if (model.isNew()) {
+      alert('Can not UPDATE a model without an ID. Set it, or use CREATE.');
+    } else {
+      model.save({}, options);
+    }
   }
 
   // DELETE

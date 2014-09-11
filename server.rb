@@ -56,6 +56,9 @@ get '/' do
     send_file File.join(settings.public_folder, 'index.html')
 end
 
+#
+# Model reading.
+#
 get '/user' do
     send_file File.join('data', 'user.json')
 end
@@ -76,11 +79,18 @@ get '/user/:id' do |id|
     end
 end
 
+
+#
+# Model saving.
+#
 post '/user' do
     # Docs say: "in case someone already read it", but why?
     request.body.rewind
-
-    model = JSON.parse request.body.read
+    if request.media_type == 'application/json'
+        model = JSON.parse request.body.read
+    else
+        model = JSON.parse request[:model]
+    end
     create_model model
 end
 

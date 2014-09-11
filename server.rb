@@ -3,6 +3,9 @@
 require 'sinatra'
 require 'sinatra/cross_origin'
 require 'json'
+require 'fileutils'
+
+FileUtils.cp(File.join('data', 'user-template.json'), File.join('data', 'user.json'))
 
 configure do
   enable :cross_origin

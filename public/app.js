@@ -20,28 +20,30 @@ var View = Backbone.View.extend({
   },
 
   syncModelAttributes: function(event) {
-    switch (event.target.name) {
+    var name = event.target.name;
+    var value = event.target.value;
+
+    switch (name) {
     case 'name':
+      break;
     case 'age':
+      value = parseInt(event.target.value) || null;
+      break;
     case 'enabled':
-      var value = event.target.value;
-      if (event.target.name === 'age') { value = parseInt(value); }
-      if (event.target.name === 'enabled') { value = event.target.checked; }
-      model.set(event.target.name, value);
+      value = event.target.checked;
       break;
 
+    // TODO: I'm unsure how to properly unset the ID. Maybe Backbone is not even
+    // designed for it. I've considered deleting, but null seems fine for now.
+    // delete model.id;
+    // delete model.attributes[model.idAttribute];
     case 'id':
-      if (event.target.value === '') {
-        // TODO: Mmm, unsure how to actually unset the ID. Probably Backbone is
-        // not even designed for it.
-        // delete model.id;
-        // delete model.attributes[model.idAttribute];
-        model.set(model.idAttribute, null);
-      } else {
-        model.set(model.idAttribute, parseInt(event.target.value) || null);
-      }
+      name = model.idAttribute;
+      value = parseInt(event.target.value) || null;
       break;
     }
+
+    model.set(name, value);
   },
 
   events: {

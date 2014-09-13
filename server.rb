@@ -45,9 +45,25 @@ helpers do
     end
   end
 
-  def update_model(model)
+    def update_model(model)
+        if !model['id']
+            message = 'You can not update a model without id'
+            logger.info message
+            status 400
+            message
+        else
+            collection = JSON.parse(File.read(model_file))
+            collection.each_index do |i|
+                collection[i] = model if collection[i]['id'] == model['id']
+            end
 
-  end
+            File.open(model_file, 'w') {|f| f.write(JSON.pretty_generate(collection))}
+
+            # Return the model
+            content_type :json
+            model.to_json
+        end
+    end
 
 end
 
@@ -92,6 +108,22 @@ post '/user' do
         model = JSON.parse request[:model]
     end
     create_model model
+end
+
+
+#
+# Model updating.
+#
+
+# This applies to POST sent with 'X-HTTP-Method-Override: PUT' just fine.
+put '/user/:id' do
+    request.body.rewind
+    if request.media_type == 'application/json'
+        model = JSON.parse request.body.read
+    else
+        model = JSON.parse request[:model]
+    end
+    update_model model
 end
 
 

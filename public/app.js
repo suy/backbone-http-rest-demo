@@ -1,6 +1,7 @@
 _.templateSettings = {
   interpolate: /\{\{(.+?)\}\}/g,
-  escape: /\{\{\{(.+?)\}\}\}/g
+  escape: /\{\{\{(.+?)\}\}\}/g,
+  evaluate: /<%([\s\S]+?)%>/g,
 };
 
 var View = Backbone.View.extend({

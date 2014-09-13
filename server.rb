@@ -8,42 +8,42 @@ require 'fileutils'
 FileUtils.cp(File.join('data', 'user-template.json'), File.join('data', 'user.json'))
 
 configure do
-  enable :cross_origin
+    enable :cross_origin
 end
 
 helpers do
-  def model_file()
-    File.join('data', 'user.json')
-  end
-
-
-  #
-  # MODEL
-  #
-  def create_model(model)
-    if model['id']
-        message = 'You can not set the id when creating'
-        logger.info message
-        status 400
-        message
-    else
-        collection = JSON.parse(File.read(model_file))
-        largest = if collection.empty? then 0 else collection.first['id'] end
-        collection.each do |element|
-            largest = element['id'] if element['id'] > largest
-        end
-        logger.info "Largest id was #{largest}. New model will be #{largest+1}."
-
-        model['id'] = largest + 1
-        collection << model
-
-        File.open(model_file, 'w') {|f| f.write(JSON.pretty_generate(collection))}
-
-        # Return the model
-        content_type :json
-        model.to_json
+    def model_file()
+        File.join('data', 'user.json')
     end
-  end
+
+
+    #
+    # MODEL
+    #
+    def create_model(model)
+        if model['id']
+            message = 'You can not set the id when creating'
+            logger.info message
+            status 400
+            message
+        else
+            collection = JSON.parse(File.read(model_file))
+            largest = if collection.empty? then 0 else collection.first['id'] end
+            collection.each do |element|
+                largest = element['id'] if element['id'] > largest
+            end
+            logger.info "Largest id was #{largest}. New model will be #{largest+1}."
+
+            model['id'] = largest + 1
+            collection << model
+
+            File.open(model_file, 'w') {|f| f.write(JSON.pretty_generate(collection))}
+
+            # Return the model
+            content_type :json
+            model.to_json
+        end
+    end
 
     def update_model(model)
         if !model['id']

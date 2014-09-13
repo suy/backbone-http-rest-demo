@@ -23,8 +23,10 @@ var View = Backbone.View.extend({
     switch (event.target.name) {
     case 'name':
     case 'age':
+    case 'enabled':
       var value = event.target.value;
       if (event.target.name === 'age') { value = parseInt(value); }
+      if (event.target.name === 'enabled') { value = event.target.checked; }
       model.set(event.target.name, value);
       break;
 

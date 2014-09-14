@@ -64,7 +64,6 @@ helpers do
             model.to_json
         end
     end
-
 end
 
 
@@ -126,4 +125,25 @@ put '/user/:id' do
     update_model model
 end
 
+
+#
+# Model deleting.
+#
+
+delete '/user/:id' do
+    collection = JSON.parse(File.read(model_file))
+    result = collection.reject! do |item|
+        item['id'] == params[:id].to_i
+    end
+    if result
+        File.open(model_file, 'w') {|f| f.write(JSON.pretty_generate(collection))}
+        content_type :json
+        result.to_json
+    else
+        message = "Element wth id of #{params[:id]} not found"
+        logger.info message
+        status 404
+        message
+    end
+end
 

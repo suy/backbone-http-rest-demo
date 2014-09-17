@@ -64,8 +64,10 @@
 
 <div class="jumbotron">
   <h1>Backbone HTTP demo</h1>
-  <p class="lead"><acronym title="Create Read Update Delete">CRUD</acronym> a
+  <p class="lead"><acronym title="Create Read Update Delete">C.R.U.D</acronym> a
     Backbone model to an HTTP server.</p>
+  <p>Read the <a href="#help">help</a> and the <a
+    href="#motivation">motivation</a> about this simple demo.</p>
 </div>
 
 <form class="form-horizontal" role="form">
@@ -81,22 +83,28 @@
       <div class="checkbox">
         <label>
           <input type="checkbox" class="emulate-http">
-          Emulate HTTP (i.e., send everything through HTTP POST)
-        </label>
+          Emulate HTTP (i.e., send HTTP POST instead of PUT, DELETE and PATCH
+          with the pseudo-standard HTTP header
+          <code>X-HTTP-Method-Override</code>).</label>
       </div>
       <div class="checkbox">
         <label>
           <input type="checkbox" class="emulate-json">
-          Emulate JSON (i.e. send everything through
-          application/x-www-form-urlencoded with the model serialized in the
-          model parameter)
+          Emulate JSON (i.e. instead of sending JSON in the body of the request,
+          use <code>application/x-www-form-urlencoded</code> with the model
+          serialized in the model parameter). This encodes the model first as
+          JSON and then the JSON must be escaped as URL encoded, so it has
+          additional overhead.
         </label>
       </div>
       <div class="checkbox">
         <label>
           <input type="checkbox" class="use-http-patch">
           Use HTTP PATCH (i.e. don't send all the attributes when updating the
-          model, send only the difference, and use HTTP PATCH instead of PUT)
+          model, send only the difference, and use HTTP PATCH instead of PUT).
+          This is not the same as <a
+            href="http://tools.ietf.org/html/rfc6902">RFC 6902: JSON Patch</a>,
+          which is not implemented in Backbone.
         </label>
       </div>
     </div>
@@ -116,6 +124,38 @@
 
 <div class="model-view">
 </div>
+
+
+<h3 id="help">Help</h3>
+
+<p>Point the URL to a server (with an absolute URL if needed). If you don't set
+it, <code>/user</code> in the same server where where the page is being viewed
+will be used, so if you are reading this text <a
+href="http://suy.github.io/backbone-http-rest-demo/public/">on the GitHub
+page</a> or served statically, is not going to work. The repository includes
+a simple reference implementation written in Ruby with <a
+href="http://sinatrarb.com">Sinatra</a>, but more examples with other frameworks
+are also intended.</p>
+
+<p>The backbone options are all set to false by default, since that is the
+default Backbone implementation. Check them to use those flags in the next
+request.</p>
+
+<h3 id="motivation">Motivation</h3>
+
+<p>The motivation of this demo is understanding properly how Backbone models are
+supposed to work when persisting data, and what expect in the default
+implementation of <code>Backbone.sync</code> (the Backbone function used to
+persist instances of in memory models). Said default implementation
+persists the model to an HTTP server interchanging JSON, but the subtleties of
+error codes and the events triggered on error or success is very poorly
+documented.</p>
+
+<p>The default implementation can be tuned with some of the options mentioned
+above, and overriding the functions <code>toJSON</code> and <code>parse</code>
+to adapt the response body to the model. Better handling the error codes is
+trickier.</p>
+
 
 </div> <!-- /container -->
 
